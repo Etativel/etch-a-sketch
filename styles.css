@@ -1,0 +1,45 @@
+* {
+    padding: 0px;
+    margin: 0px;
+    font-family: Arial, Helvetica, sans-serif;
+    border: solid black;
+}
+
+.header {
+    font-size: 24px;
+    font-weight: bold   ;
+    background-color: yellow;
+    padding: 8px;
+    text-align: center;
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    height: 630px;
+    align-items: center;
+    
+}
+
+.navbar {
+    background-color: grey;
+    height: auto;
+    width: 500px;
+    margin-top: 8px;
+    padding: 20px 0px 20px;
+}
+
+.grid {
+    display: grid;
+    height: 500px;
+    width: 500px;
+    border: solid black;
+}
+
+.footer {
+    background-color: yellow;
+    text-align: center;
+    font-size: medium;
+    padding: 12px;
+}
