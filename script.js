@@ -3,13 +3,7 @@ createDrawBoard(16) //The default board size is 16 x 16
 })
 
 // Select Color
-
-// THIS IS A TEST
-
-const rainbowBtn = document.querySelector(".rainbow");
 const colorInput = document.querySelector(".color");
-const grayBtn = document.querySelector(".grey-scale");
-const eraserBtn = document.querySelector('.eraser')
 
 let rainbow = false;
 let basicColor = false;
@@ -45,43 +39,45 @@ function setColor(){
     else{
         return "#000000";
     }
-    
-
 }
 
-rainbowBtn.addEventListener("click", ()=>{
-    basicColor = false;
-    grayScale = false;
-    erase = false;
-    rainbow = true;
-})
+function colorHandler(basicColorFlag, rainbowFlag, grayScaleFlag, eraseFlag){
+    basicColor = basicColorFlag;
+    grayScale = grayScaleFlag;
+    erase = eraseFlag;
+    rainbow = rainbowFlag;
+}
 
-colorInput.addEventListener("click", ()=>{
-    rainbow = false;
-    grayScale = false;
-    erase = false;
-    basicColor = true;
-})
-grayBtn.addEventListener("click", ()=>{
-    rainbow = false;
-    basicColor = false;
-    erase = false;
-    grayScale = true;
-})
+// Use event delegation
+const colorContainer = document.querySelector(".navbar")
+colorContainer.addEventListener("click", (ev)=>{
+    console.log(rainbow)
+    let target = ev.target
+    console.log(target)
+    console.log(target.id)
+    switch(target.id){
+        case "color":
+            console.log(target.id)
+            colorHandler(true, false, false,false);
+            break;
+        case "rainbow":
+            colorHandler(false, true, false, false);
+            break;
+        case "grey-scale":
+            colorHandler(false, false, true, false);
+            break;
+        case "eraser":
+            colorHandler(false, false, false,true);
+            break;
+    }
 
-eraserBtn.addEventListener("click", ()=>{
-    rainbow = false;
-    basicColor = false;
-    grayScale = false;
-    erase = true
 })
-
 
 let drawBoard = document.querySelector(".grid");
 function createDrawBoard(size){
 
-    drawBoard.style.gridTemplateColumns = `repeat(${size}, 1fr)`
-    drawBoard.style.gridTemplateRows = `repeat(${size}, 1fr)`
+    drawBoard.style.gridTemplateColumns = `repeat(${size}, 1fr)`;
+    drawBoard.style.gridTemplateRows = `repeat(${size}, 1fr)`;
     
     let numDivs = size * size;
 
@@ -101,25 +97,21 @@ function createDrawBoard(size){
                 div.style.backgroundColor = `rgb(${g - 25}, ${g - 25}, ${b - 25})`;
             }
         })
-        drawBoard.appendChild(div)
+        drawBoard.appendChild(div);
     }
 }
 
-
-
-// Erase Board (Reset Button)
+// Reset Board (Reset Button)
 const resetBtn = document.querySelector(".reset");
 function eraseBoard(){
     rainbow = false;
     basicColor = false;
     grayScale = false;
-    colorInput.value = setColor()
+    colorInput.value = setColor();
     let child = Array.from(drawBoard.childNodes); // Make an array of nodes for child re-color
-    child.forEach((item)=>item.style.backgroundColor = "rgb(255,255,255)")
+    child.forEach((item)=>item.style.backgroundColor = "rgb(255,255,255)");
 }
-resetBtn.addEventListener("click", eraseBoard)
-
-
+resetBtn.addEventListener("click", eraseBoard);
 
 // Event delegation for drawing
 const boardSize = document.querySelector(".boardSize")
@@ -128,15 +120,15 @@ boardSize.addEventListener('click', (ev)=>{
     let child = Array.from(drawBoard.childNodes);
     switch (target.id){
         case "board-16":
-            child.forEach((item)=>item.style.backgroundColor = "white")
+            child.forEach((item)=>item.style.backgroundColor = "white");
             createDrawBoard(16);
             break;
         case "board-32":
-            child.forEach((item)=>item.style.backgroundColor = "white")
+            child.forEach((item)=>item.style.backgroundColor = "white");
             createDrawBoard(32);
             break;
         case "board-64":
-            child.forEach((item)=>item.style.backgroundColor = "white")
+            child.forEach((item)=>item.style.backgroundColor = "white");
             createDrawBoard(64);
             break;
     }
