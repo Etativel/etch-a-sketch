@@ -6,63 +6,61 @@ createDrawBoard(16) //The default board size is 16 x 16
 
 // THIS IS A TEST
 
-const rainbowBtn = document.querySelector(".rainbow")
-const colorInput = document.querySelector(".color")
+const rainbowBtn = document.querySelector(".rainbow");
+const colorInput = document.querySelector(".color");
+const grayBtn = document.querySelector(".grey-scale");
 
 let rainbow = false;
 let basicColor = false;
-
+let grayScale = false;
+let greyAmount = 0;
 function setColor(){
     if (rainbow === true){
-        colorInput.value = "#" + Math.floor(Math.random()*16777215).toString(16);
-        return "#" + Math.floor(Math.random()*16777215).toString(16);
+        let r = Math.floor(Math.random() * 256);
+        let g = Math.floor(Math.random() * 256);
+        let b = Math.floor(Math.random() * 256);
+        // Create the RGB color string
+        const randomRgbColor = `rgb(${r}, ${g}, ${b})`;
+        
+        function componentToHex(c) {
+            var hex = c.toString(16);
+            return hex.length == 1 ? "0" + hex : hex;
+          }
+          
+          function rgbToHex(r, g, b) {
+            return "#" + componentToHex(r) + componentToHex(g) + componentToHex(b);
+          }
+        let rgbToHexConverted = rgbToHex(r,g,b) 
+        colorInput.value = rgbToHexConverted
+        return randomRgbColor,rgbToHexConverted;
     }else if (basicColor === true){
-        console.log(colorInput.value)
-        return colorInput.value
-    }else{
-        return "#000000"
+        return colorInput.value;
+    }else if (grayScale === true){
+        greyAmount++
     }
-    // else if (grayScale === true){
-    //     return;
-    // }
+    else{
+        return "#000000";
+    }
+    
+
 }
 
 rainbowBtn.addEventListener("click", ()=>{
-    rainbow = true;
     basicColor = false;
+    grayScale = false;
+    rainbow = true;
 })
 
 colorInput.addEventListener("click", ()=>{
     rainbow = false;
+    grayScale = false;
     basicColor = true;
 })
-
-
-// THIS IS A TEST
-
-
-// const colorInput = document.querySelector(".color")
-
-// let brushColor = "#000000"; //Black is the default color
-
-// colorInput.oninput = function(){
-//     brushColor = colorInput.value
-//     console.log(colorInput.value)
-// }
-
-// colorInput.addEventListener("click",()=>{ //WHY I NEED THIS FUNCTION LOL (WILL BE REMOVED IT IN THE FUTURE)
-//     brushColor = colorInput.value
-// })
-
-//Rainbow color
-// const rainbowBtn = document.querySelector(".rainbow")
-// let rainbow = false;
-// rainbowBtn.addEventListener("click", ()=>{
-//     rainbow = true;
-// })
-// while (rainbow){
-//     brushColor = "#" + Math.floor(Math.random()*16777215).toString(16);
-// }
+grayBtn.addEventListener("click", ()=>{
+    rainbow = false;
+    basicColor = false;
+    grayScale = true;
+})
 
 
 let drawBoard = document.querySelector(".grid");
@@ -76,7 +74,16 @@ function createDrawBoard(size){
     for (let i = 0; i < numDivs; i++){
         let div = document.createElement("div");
         div.addEventListener('mouseover',()=>{
-            div.style.backgroundColor = setColor()
+            if (!grayScale){
+                div.style.backgroundColor = setColor()
+            }else{
+                const style = getComputedStyle(div)
+                let color= style.backgroundColor;
+                const rgbValues = color.match(/\d+/g);
+                console.log(rgbValues)
+                console.log(typeof(rgbValues))
+                div.style.backgroundColor = color
+            }
         })
         drawBoard.appendChild(div)
     }
@@ -89,9 +96,10 @@ const eraseBtn = document.querySelector(".reset");
 function eraseBoard(){
     rainbow = false;
     basicColor = false;
+    grayScale = false;
     colorInput.value = setColor()
     let child = Array.from(drawBoard.childNodes); // Make an array of nodes for child re-color
-    child.forEach((item)=>item.style.backgroundColor = "white")
+    child.forEach((item)=>item.style.backgroundColor = "rgb(255,255,255)")
 }
 eraseBtn.addEventListener("click", eraseBoard)
 
@@ -104,7 +112,6 @@ boardSize.addEventListener('click', (ev)=>{
     let child = Array.from(drawBoard.childNodes);
     switch (target.id){
         case "board-16":
-            console.log(brushColor)
             child.forEach((item)=>item.style.backgroundColor = "white")
             createDrawBoard(16);
             break;
