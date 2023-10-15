@@ -35,7 +35,7 @@
 .navbar {
     border-radius: 6px;
     display: flex;
-    background-color: grey;
+    background-color: white;
     width: 800px;
     margin-top: 8px;
     padding: 20px 0px 20px;
@@ -44,14 +44,28 @@
 }
 
 .btn {
+
+    font-weight: bold;
     padding: 8px;
     width: 100px;
     border-radius: 6px;
-    border: 0px;
+    background-color: white;
 }
+
+.btn:hover{
+    background-color: gray;
+}
+.size-btn:hover{
+    background-color: gray;
+}
+
+.active {
+    background-color: gray;
+  }
 
 /* Color button */
 .btn.color{
+    border: 0px;
     width: 50px;
     height: 50px;
     background-color: grey;

@@ -1,14 +1,26 @@
-document.addEventListener("DOMContentLoaded", ()=>{
-createDrawBoard(16) //The default board size is 16 x 16
-})
-
-// Select Color
-const colorInput = document.querySelector(".color");
+window.onload = () => {
+    createDrawBoard(16)
+  }
 
 let rainbow = false;
 let basicColor = false;
 let grayScale = false;
 let erase = false;
+
+const rainbowBtn = document.querySelector(".rainbow");
+const colorInput = document.querySelector(".color");
+const grayBtn = document.querySelector(".grey-scale");
+const eraserBtn = document.querySelector('.eraser')
+const grid = document.querySelector(".grid")
+const colorContainer = document.querySelector(".navbar")
+const buttons = document.querySelectorAll(".btn");
+let drawBoard = document.querySelector(".grid");
+const resetBtn = document.querySelector(".reset");
+const boardSize = document.querySelector(".boardSize")
+
+let mouseDown = false
+document.body.onmousedown = () => (mouseDown = true)
+document.body.onmouseup = () => (mouseDown = false)
 
 function setColor(){
     if (rainbow){
@@ -48,32 +60,7 @@ function colorHandler(basicColorFlag, rainbowFlag, grayScaleFlag, eraseFlag){
     rainbow = rainbowFlag;
 }
 
-// Use event delegation
-const colorContainer = document.querySelector(".navbar")
-colorContainer.addEventListener("click", (ev)=>{
-    console.log(rainbow)
-    let target = ev.target
-    console.log(target)
-    console.log(target.id)
-    switch(target.id){
-        case "color":
-            console.log(target.id)
-            colorHandler(true, false, false,false);
-            break;
-        case "rainbow":
-            colorHandler(false, true, false, false);
-            break;
-        case "grey-scale":
-            colorHandler(false, false, true, false);
-            break;
-        case "eraser":
-            colorHandler(false, false, false,true);
-            break;
-    }
 
-})
-
-let drawBoard = document.querySelector(".grid");
 function createDrawBoard(size){
 
     drawBoard.style.gridTemplateColumns = `repeat(${size}, 1fr)`;
@@ -82,39 +69,64 @@ function createDrawBoard(size){
     let numDivs = size * size;
 
     for (let i = 0; i < numDivs; i++){
-        let div = document.createElement("div");
-        div.style.backgroundColor = "rgb(255,255,255)"
-        div.addEventListener('mouseover',()=>{
-            if (!grayScale){
-                div.style.backgroundColor = setColor()
-            }else{
-                const style = getComputedStyle(div)
-                let color= style.backgroundColor;
-                const rgbValues = color.match(/\d+/g);
-                r = parseInt(rgbValues[0]);
-                g = parseInt(rgbValues[1]);
-                b = parseInt(rgbValues[2]);
-                div.style.backgroundColor = `rgb(${g - 25}, ${g - 25}, ${b - 25})`;
-            }
-        })
-        drawBoard.appendChild(div);
+        let gridBox = document.createElement("div");
+        gridBox.style.backgroundColor = "rgb(255,255,255)"
+        gridBox.addEventListener('mouseover',changeColor)
+        drawBoard.appendChild(gridBox);
     }
 }
 
-// Reset Board (Reset Button)
-const resetBtn = document.querySelector(".reset");
+function changeColor(e){
+    if (e.type === 'mouseover' && !mouseDown) return
+    if (!grayScale){
+        e.target.style.backgroundColor = setColor()
+    }else{
+        const style = getComputedStyle(e.target)
+        let color= style.backgroundColor;
+        const rgbValues = color.match(/\d+/g);
+        r = parseInt(rgbValues[0]);
+        g = parseInt(rgbValues[1]);
+        b = parseInt(rgbValues[2]);
+        e.target.style.backgroundColor = `rgb(${g - 25}, ${g - 25}, ${b - 25})`;
+    }
+}
+
 function eraseBoard(){
     rainbow = false;
     basicColor = false;
     grayScale = false;
+    erase = false;
     colorInput.value = setColor();
     let child = Array.from(drawBoard.childNodes); // Make an array of nodes for child re-color
     child.forEach((item)=>item.style.backgroundColor = "rgb(255,255,255)");
 }
-resetBtn.addEventListener("click", eraseBoard);
 
-// Event delegation for drawing
-const boardSize = document.querySelector(".boardSize")
+
+// Coloring Board
+colorContainer.addEventListener("click", (ev)=>{
+    let target = ev.target
+    buttons.forEach(button => button.classList.remove('active'));
+    switch(target.id){
+        case "color":
+            colorHandler(true, false, false,false);
+            break;
+        case "rainbow":
+            rainbowBtn.classList.add('active');
+            colorHandler(false, true, false, false);
+            break;
+        case "grey-scale":
+            grayBtn.classList.add('active');
+            colorHandler(false, false, true, false);
+            break;
+        case "eraser":
+            eraserBtn.classList.add('active');
+            colorHandler(false, false, false,true);
+            break;
+    }
+
+})
+
+// Resetting Board
 boardSize.addEventListener('click', (ev)=>{
     let target = ev.target
     let child = Array.from(drawBoard.childNodes);
@@ -133,3 +145,6 @@ boardSize.addEventListener('click', (ev)=>{
             break;
     }
 })
+
+resetBtn.addEventListener("click", eraseBoard);
+
