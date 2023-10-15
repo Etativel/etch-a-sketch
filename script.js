@@ -22,7 +22,7 @@ let mouseDown = false
 document.body.onmousedown = () => (mouseDown = true)
 document.body.onmouseup = () => (mouseDown = false)
 
-function setColor(){
+function setColor(){    
     if (rainbow){
         let r = Math.floor(Math.random() * 256);
         let g = Math.floor(Math.random() * 256);
@@ -72,12 +72,14 @@ function createDrawBoard(size){
         let gridBox = document.createElement("div");
         gridBox.style.backgroundColor = "rgb(255,255,255)"
         gridBox.addEventListener('mouseover',changeColor)
+        gridBox.addEventListener('mousedown',changeColor)
         drawBoard.appendChild(gridBox);
     }
 }
 
 function changeColor(e){
     if (e.type === 'mouseover' && !mouseDown) return
+    console.log(mouseDown)
     if (!grayScale){
         e.target.style.backgroundColor = setColor()
     }else{
