@@ -1,6 +1,6 @@
-window.onload = () => {
+document.addEventListener("DOMContentLoaded", ()=>{
     createDrawBoard(16)
-  }
+})
 
 let rainbow = false;
 let basicColor = false;
@@ -11,16 +11,36 @@ const rainbowBtn = document.querySelector(".rainbow");
 const colorInput = document.querySelector(".color");
 const grayBtn = document.querySelector(".grey-scale");
 const eraserBtn = document.querySelector('.eraser')
-const grid = document.querySelector(".grid")
 const colorContainer = document.querySelector(".navbar")
 const buttons = document.querySelectorAll(".btn");
 let drawBoard = document.querySelector(".grid");
 const resetBtn = document.querySelector(".reset");
 const boardSize = document.querySelector(".boardSize")
 
-let mouseDown = false
-document.body.onmousedown = () => (mouseDown = true)
-document.body.onmouseup = () => (mouseDown = false)
+let drawing = false;
+document.addEventListener('mousedown', (e) => {
+    if (e.target.classList.contains("grid-box")){
+        e.preventDefault();
+        drawing = true;
+        changeColor(e);
+    }
+});
+
+document.addEventListener('mouseup', (e) => {
+  e.preventDefault();
+  drawing = false;
+});
+
+
+
+function componentToHex(c) {
+    var hex = c.toString(16);
+    return hex.length == 1 ? "0" + hex : hex;
+};
+  
+function rgbToHex(r, g, b) {
+    return "#" + componentToHex(r) + componentToHex(g) + componentToHex(b);
+};
 
 function setColor(){    
     if (rainbow){
@@ -29,22 +49,11 @@ function setColor(){
         let b = Math.floor(Math.random() * 256);
         // Create the RGB color string
         const randomRgbColor = `rgb(${r}, ${g}, ${b})`;
-        
-        function componentToHex(c) {
-            var hex = c.toString(16);
-            return hex.length == 1 ? "0" + hex : hex;
-          }
-          
-          function rgbToHex(r, g, b) {
-            return "#" + componentToHex(r) + componentToHex(g) + componentToHex(b);
-          }
         let rgbToHexConverted = rgbToHex(r,g,b) 
         colorInput.value = rgbToHexConverted
-        return randomRgbColor,rgbToHexConverted;
+        return randomRgbColor
     }else if (basicColor){
         return colorInput.value;
-    }else if (grayScale){
-        return;
     }else if (erase){
         return 	"#FFFFFF"
     }
@@ -70,6 +79,7 @@ function createDrawBoard(size){
 
     for (let i = 0; i < numDivs; i++){
         let gridBox = document.createElement("div");
+        gridBox.classList.add("grid-box")
         gridBox.style.backgroundColor = "rgb(255,255,255)"
         gridBox.addEventListener('mouseover',changeColor)
         gridBox.addEventListener('mousedown',changeColor)
@@ -77,21 +87,22 @@ function createDrawBoard(size){
     }
 }
 
-function changeColor(e){
-    if (e.type === 'mouseover' && !mouseDown) return
-    console.log(mouseDown)
-    if (!grayScale){
-        e.target.style.backgroundColor = setColor()
-    }else{
-        const style = getComputedStyle(e.target)
-        let color= style.backgroundColor;
+function changeColor(e) {
+    if (drawing) {
+      if (!grayScale) {
+        e.target.style.backgroundColor = setColor();
+      } else {
+        const style = getComputedStyle(e.target);
+        let color = style.backgroundColor;
         const rgbValues = color.match(/\d+/g);
-        r = parseInt(rgbValues[0]);
-        g = parseInt(rgbValues[1]);
-        b = parseInt(rgbValues[2]);
+        r = rgbValues[0];
+        g = rgbValues[1];
+        b = rgbValues[2];
         e.target.style.backgroundColor = `rgb(${g - 25}, ${g - 25}, ${b - 25})`;
+      }
     }
-}
+  }
+
 
 function eraseBoard(){
     rainbow = false;
@@ -144,6 +155,10 @@ boardSize.addEventListener('click', (ev)=>{
         case "board-64":
             child.forEach((item)=>item.style.backgroundColor = "white");
             createDrawBoard(64);
+            break;
+        case "board-100":
+            child.forEach((item)=>item.style.backgroundColor = "white");
+            createDrawBoard(100);
             break;
     }
 })
