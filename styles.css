@@ -62,7 +62,7 @@ input::-webkit-color-swatch {
 }
 
 input[type="color"] {
-    -webkit-appearance: none;
+    /* -webkit-appearance: none; */
     border: none;
 }
 input[type="color"]::-webkit-color-swatch-wrapper {
