@@ -9,13 +9,15 @@ createDrawBoard(16) //The default board size is 16 x 16
 const rainbowBtn = document.querySelector(".rainbow");
 const colorInput = document.querySelector(".color");
 const grayBtn = document.querySelector(".grey-scale");
+const eraserBtn = document.querySelector('.eraser')
 
 let rainbow = false;
 let basicColor = false;
 let grayScale = false;
-let greyAmount = 0;
+let erase = false;
+
 function setColor(){
-    if (rainbow === true){
+    if (rainbow){
         let r = Math.floor(Math.random() * 256);
         let g = Math.floor(Math.random() * 256);
         let b = Math.floor(Math.random() * 256);
@@ -33,10 +35,12 @@ function setColor(){
         let rgbToHexConverted = rgbToHex(r,g,b) 
         colorInput.value = rgbToHexConverted
         return randomRgbColor,rgbToHexConverted;
-    }else if (basicColor === true){
+    }else if (basicColor){
         return colorInput.value;
-    }else if (grayScale === true){
-        greyAmount++
+    }else if (grayScale){
+        return;
+    }else if (erase){
+        return 	"#FFFFFF"
     }
     else{
         return "#000000";
@@ -48,18 +52,28 @@ function setColor(){
 rainbowBtn.addEventListener("click", ()=>{
     basicColor = false;
     grayScale = false;
+    erase = false;
     rainbow = true;
 })
 
 colorInput.addEventListener("click", ()=>{
     rainbow = false;
     grayScale = false;
+    erase = false;
     basicColor = true;
 })
 grayBtn.addEventListener("click", ()=>{
     rainbow = false;
     basicColor = false;
+    erase = false;
     grayScale = true;
+})
+
+eraserBtn.addEventListener("click", ()=>{
+    rainbow = false;
+    basicColor = false;
+    grayScale = false;
+    erase = true
 })
 
 
@@ -73,6 +87,7 @@ function createDrawBoard(size){
 
     for (let i = 0; i < numDivs; i++){
         let div = document.createElement("div");
+        div.style.backgroundColor = "rgb(255,255,255)"
         div.addEventListener('mouseover',()=>{
             if (!grayScale){
                 div.style.backgroundColor = setColor()
@@ -80,9 +95,10 @@ function createDrawBoard(size){
                 const style = getComputedStyle(div)
                 let color= style.backgroundColor;
                 const rgbValues = color.match(/\d+/g);
-                console.log(rgbValues)
-                console.log(typeof(rgbValues))
-                div.style.backgroundColor = color
+                r = parseInt(rgbValues[0]);
+                g = parseInt(rgbValues[1]);
+                b = parseInt(rgbValues[2]);
+                div.style.backgroundColor = `rgb(${g - 25}, ${g - 25}, ${b - 25})`;
             }
         })
         drawBoard.appendChild(div)
@@ -92,7 +108,7 @@ function createDrawBoard(size){
 
 
 // Erase Board (Reset Button)
-const eraseBtn = document.querySelector(".reset");
+const resetBtn = document.querySelector(".reset");
 function eraseBoard(){
     rainbow = false;
     basicColor = false;
@@ -101,7 +117,7 @@ function eraseBoard(){
     let child = Array.from(drawBoard.childNodes); // Make an array of nodes for child re-color
     child.forEach((item)=>item.style.backgroundColor = "rgb(255,255,255)")
 }
-eraseBtn.addEventListener("click", eraseBoard)
+resetBtn.addEventListener("click", eraseBoard)
 
 
 
