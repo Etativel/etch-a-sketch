@@ -19,6 +19,7 @@ const boardSize = document.querySelector(".boardSize")
 
 let drawing = false;
 document.addEventListener('mousedown', (e) => {
+    console.log(e)
     if (e.target.classList.contains("grid-box")){
         e.preventDefault();
         drawing = true;
