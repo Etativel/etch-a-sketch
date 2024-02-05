@@ -19,7 +19,7 @@ const boardSize = document.querySelector(".boardSize")
 
 let drawing = false;
 document.addEventListener('mousedown', (e) => {
-    console.log(e)
+    // console.log(e)
     if (e.target.classList.contains("grid-box")){
         e.preventDefault();
         drawing = true;
@@ -110,7 +110,7 @@ function eraseBoard(){
     basicColor = false;
     grayScale = false;
     erase = false;
-    colorInput.value = setColor();
+    colorInput.value =  setColor();
     let child = Array.from(drawBoard.childNodes); // Make an array of nodes for child re-color
     child.forEach((item)=>item.style.backgroundColor = "rgb(255,255,255)");
 }
@@ -142,6 +142,7 @@ colorContainer.addEventListener("click", (ev)=>{
 
 // Resetting Board
 boardSize.addEventListener('click', (ev)=>{
+    // console.log(ev.target)
     let target = ev.target
     let child = Array.from(drawBoard.childNodes);
     switch (target.id){
